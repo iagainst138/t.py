@@ -1,0 +1,31 @@
+#!/bin/bash
+
+VERBOSE=false
+
+usage() {
+cat << EOF
+Display usage here.
+EOF
+}
+
+while getopts “hs:vx” OPTION; do
+    case $OPTION in
+    h)
+        usage
+        exit 1
+        ;;
+    s)
+        SOMETHING=$OPTARG   
+        ;;
+    v)
+        VERBOSE=true
+        ;;
+    x)
+        set -x
+        ;;
+    ?)
+        usage
+        exit 1
+        ;;
+    esac
+done
