@@ -142,6 +142,8 @@ if __name__ == '__main__':
         remove(options.remove)
     elif len(options.args) == 2:
         copy_template(options.args[0], options.args[1])
+    elif len(options.args) == 1:
+        copy_template(options.args[0], os.path.join(os.getcwd(), options.args[0]))
     else:
         parser.print_help()
     
