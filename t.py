@@ -17,14 +17,18 @@ def exists(template):
     return os.path.exists(template)
 
 
-def copy_template(src, dst, overwrite=False):
-    if os.path.exists(dst) and not overwrite:
-        sys.exit(dst + ' already exists')
+def copy_template(template, dst, overwrite=False):
+    if exists(template):
+        src = os.path.join(TEMPLATE_DIR, template)
+        if os.path.exists(dst) and not overwrite:
+            sys.exit(dst + ' already exists')
 
-    if os.path.isdir(src):
-        shutil.copytree(src, dst)
+        if os.path.isdir(src):
+            shutil.copytree(src, dst)
+        else:
+            shutil.copyfile(src, dst)
     else:
-        shutil.copyfile(src, dst)
+        sys.exit('Template ' + template + ' does not exist')
 
 
 def list_templates():
@@ -101,9 +105,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
             description='A script to manage and copy templates of scripts.')
     parser.add_argument('-a', '--add', help='add a template')
-    parser.add_argument('-t', '--template', help='name of template')
+    parser.add_argument('-n', '--name', help='name of template')
     parser.add_argument('-u', '--update', help='update a templates description')
-    parser.add_argument('-d', '--destination', help='destination to copy template')
     parser.add_argument('-R', '--remove', help='template to remove')
     parser.add_argument('-l', '--list', help='list templates', action='store_true')
     parser.add_argument('-o', '--overwrite', help='allow overwriting', action='store_true')
@@ -124,22 +127,23 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
-    
-    if options.add:
+
+    if options.list:
+        list_templates()
+    elif options.add:
         template_name = options.add.split(os.sep)[-1]
-        if options.template:
-            template_name = options.template
+        if options.name:
+            template_name = options.name
         add_template( options.add, template_name, ' '.join(options.args),
                 overwrite=options.overwrite )
     elif options.update:
         update_description( options.update, ' '.join(options.args) )
-    elif options.destination and options.template:
-        t = os.path.join(TEMPLATE_DIR, options.template)
-        copy_template(t, options.destination)
     elif options.remove:
         remove(options.remove)
+    elif len(options.args) == 2:
+        copy_template(options.args[0], options.args[1])
+    else:
+        parser.print_help()
     
-    if options.list:
-        list_templates()
-
+    
     
