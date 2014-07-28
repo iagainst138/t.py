@@ -114,7 +114,7 @@ if __name__ == '__main__':
     if not options.template_dir and os.path.exists(SETTINGS):
         d = json.loads( open(SETTINGS).read() )
         TEMPLATE_DIR = d.get('template_dir', TEMPLATE_DIR)
-    else:
+    elif options.template_dir:
         TEMPLATE_DIR = options.template_dir
 
     # create template directory if it doesnt exist
