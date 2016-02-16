@@ -4,28 +4,18 @@ VERBOSE=false
 
 usage() {
 cat << EOF
+$(basename $0) usage:
 Display usage here.
+
 EOF
 }
 
 while getopts “hs:vx” OPTION; do
     case $OPTION in
-    h)
-        usage
-        exit 1
-        ;;
-    s)
-        SOMETHING=$OPTARG   
-        ;;
-    v)
-        VERBOSE=true
-        ;;
-    x)
-        set -x
-        ;;
-    ?)
-        usage
-        exit 1
-        ;;
+    h) usage exit 1 ;;
+    s) SOMETHING=$OPTARG ;;
+    v) VERBOSE=true ;;
+    x) set -x ;;
+    ?) usage; exit 1 ;;
     esac
 done
