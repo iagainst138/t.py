@@ -39,15 +39,14 @@ class Templates:
         if self.exists(template):
             src = os.path.join(self.template_dir, template)
             if os.path.exists(dst) and not overwrite:
-                sys.exit(dst + ' already exists')
+                sys.exit('"{}" already exists'.format(dst))
 
             if os.path.isdir(src):
                 shutil.copytree(src, dst)
             else:
-                shutil.copyfile(src, dst)
-                shutil.copymode(src, dst)
+                shutil.copy2(src, dst)
         else:
-            sys.exit('Template ' + template + ' does not exist.')
+            sys.exit('Template "{}" does not exist'.format(template))
 
     def list_templates(self):
         if os.path.exists(self.template_dir):
@@ -56,14 +55,11 @@ class Templates:
             if len(templates) > 0:
                 descriptions = self.load_descriptions()
                 for t in sorted(templates):
-                    if t in descriptions:
-                        print('{:10} - {}'.format(t, descriptions[t]))
-                    else:
-                        print(t)
+                    print('{:10} - {}'.format(t, descriptions.get(t, '')))
             else:
-                print('There are no templates in', self.template_dir)
+                print('There are no templates in {}'.format(self.template_dir))
         else:
-            print('Directory', self.template_dir, 'does not exist.')
+            sys.exit('Directory {} does not exist'.format(self.template_dir))
         print('')
 
     def delete(self, template):
@@ -78,7 +74,7 @@ class Templates:
                 shutil.rmtree(t)
             else:
                 os.remove(t)
-            print('Deleted {} from {}.'.format(template, self.template_dir))
+            print('Deleted {} from {}'.format(template, self.template_dir))
 
     def load_descriptions(self):
         d = {}
@@ -96,13 +92,13 @@ class Templates:
                 open(self.description_file, 'w').write(
                     json.dumps(d, sort_keys=True, indent=4) + os.linesep)
         else:
-            sys.exit('Template ' + template + ' does not exist.')
+            sys.exit('Template "{}" does not exist'.format(template))
 
     def add_template(self, src, template_name, description, overwrite=False):
         if os.path.exists(src):
             destination = os.path.join(self.template_dir, template_name)
             if os.path.exists(destination) and not overwrite:
-                sys.exit('Error: template {} already exists.'.format(template_name))
+                sys.exit('Error: template {} already exists'.format(template_name))
             else:
                 if os.path.isdir(src):
                     shutil.copytree(src, destination)
@@ -111,9 +107,9 @@ class Templates:
 
                 if len(description) > 0:
                     self.update_description(template_name, description)
-                print('Added {} to {}.'.format(template_name, self.template_dir))
+                print('Added {} to {}'.format(template_name, self.template_dir))
         else:
-            sys.exit('File {} does not exist.'.format(src))
+            sys.exit('File "{}" does not exist'.format(src))
 
     def exists(self, template):
         template = os.path.join(self.template_dir, template)
