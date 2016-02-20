@@ -12,11 +12,10 @@ description_file_name = '.templates'
 
 class Templates:
     def __init__(self):
-        # TODO rename "t_dir"
-        t_dir = os.path.join(os.path.expanduser('~'), '.t.py')
-        if not os.path.exists(t_dir):
-            self.initial_setup(t_dir)
-        config_file = os.path.join(t_dir, 'config')
+        workspace = os.path.join(os.path.expanduser('~'), '.t.py')
+        if not os.path.exists(workspace):
+            self.initial_setup(workspace)
+        config_file = os.path.join(workspace, 'config')
         config = json.loads(open(config_file).read())
         self.template_dir = config.get('template_dir')
 
@@ -24,11 +23,11 @@ class Templates:
             self.template_dir, description_file_name)
         self.ignore_list = [description_file_name, '.DS_Store', '.', '..']
 
-    def initial_setup(self, t_dir):
-        template_dir = os.path.join(t_dir, 'templates')
-        os.makedirs(t_dir)
+    def initial_setup(self, workspace):
+        template_dir = os.path.join(workspace, 'templates')
+        os.makedirs(workspace)
         os.makedirs(template_dir)
-        config_file = os.path.join(t_dir, 'config')
+        config_file = os.path.join(workspace, 'config')
         config = {
             'template_dir': template_dir,
         }
@@ -107,7 +106,7 @@ class Templates:
 
                 if len(description) > 0:
                     self.update_description(template_name, description)
-                print('Added {} to {}'.format(template_name, self.template_dir))
+                print('Added {} as "{}" to {}'.format(src, template_name, self.template_dir))
         else:
             sys.exit('File "{}" does not exist'.format(src))
 
